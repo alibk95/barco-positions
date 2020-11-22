@@ -17,4 +17,8 @@ for page in pages:
     job_page = urlopen(re)
     soup = BeautifulSoup(job_page, "html.parser")
     pg = soup.find_all("tr", attrs={"class":"data-row clickable"})
-    print(pg[0].td)
+    for p in pg:
+        position = p.td.span.a.text
+        field = p.find_all("td", attrs={"class":"colDepartment hidden-phone"})[0].span.text
+        location = p.find_all("td", attrs={"class":"colLocation hidden-phone"})[0].span.text
+        print(position, " ", field, " ", location)
