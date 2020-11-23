@@ -23,15 +23,16 @@ url = "https://onemarketingplace.es/busqueda/diseno%20web"
 driver = webdriver.Chrome('/usr/bin/chromedriver')
 driver.get(url)
 
-#while driver.find_element_by_tag_name('div'):
-#    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-#    Divs = driver.find_element_by_tag_name('div').text
-#    if 'End of Results' in Divs:
-#        break
-#    else:
-#        continue
+lenOfPage = driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
+match=False
+while(match==False):
+        lastCount = lenOfPage
+        time.sleep(3)
+        lenOfPage = driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
+        if lastCount==lenOfPage:
+            match=True
 
-time.sleep(3)
+time.sleep(10)
 page = driver.page_source
 driver.quit()
 
@@ -61,6 +62,7 @@ for s in p:
     print(email)
 
     df = df.append({'title': s.h2.text, 'email': email[7:]}, ignore_index=True)
+    del(sp)
     print("#####################")
 
 print(df)
