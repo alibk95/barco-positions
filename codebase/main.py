@@ -19,7 +19,7 @@ urls = ["https://onemarketingplace.es/busqueda/empresa/de/agencia-de-medios", "h
         "https://onemarketingplace.es/busqueda/empresa/de/performance-marketing", "https://onemarketingplace.es/busqueda/empresa/de/produccion-multimedia",
         "https://onemarketingplace.es/busqueda/empresa/de/redes-sociales", "https://onemarketingplace.es/busqueda/empresa/de/telemarketing"]
 
-urls = ["https://onemarketingplace.es/busqueda/empresa/de/agencia-de-medios", "https://onemarketingplace.es/busqueda/empresa/de/agencias-digitales"]
+urls = ["https://onemarketingplace.es/busqueda/empresa/de/formacion-en-marketing"]
 # dataframe
 df = pd.DataFrame(columns=['title', 'email'])
 base = "https://onemarketingplace.es"
@@ -40,7 +40,7 @@ for url in urls:
             match = True
 
     # Give it a 10 second rest to load whatever left behind : )) and then close the browser.
-    time.sleep(10)
+    time.sleep(4)
     page = driver.page_source
     driver.quit()
 
@@ -67,9 +67,15 @@ for url in urls:
         # sp now consists of the page with information for each article. e.g. email
         sp = BeautifulSoup(pge, "html.parser")
         email = sp.find("a", attrs={"class": "contenido__correo"}).get("href")
+        website = sp.find("a", attrs={"class": "contenido__web"}).get("href")
+        phone = sp.find("div", attrs={"class":"meta_info"}).find_all("div", attrs={"class":"item_meta_cell"})[1].text
+        address = sp.find("div", attrs={"class":"mapa-google"}).p.text
         if email == "mailto:":
             email = ""
         print(email)
+        print(website)
+        print(phone)
+        print(address)
         # add the info's to the data frame.
         df = df.append({'title': s.h2.text, 'email': email[7:]}, ignore_index=True)
         # the most important thing is the object destructive function as we create a new object in each iteration
