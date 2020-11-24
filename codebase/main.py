@@ -21,7 +21,7 @@ urls = ["https://onemarketingplace.es/busqueda/empresa/de/agencia-de-medios", "h
 
 urls = ["https://onemarketingplace.es/busqueda/empresa/de/formacion-en-marketing"]
 # dataframe
-df = pd.DataFrame(columns=['title', 'email'])
+df = pd.DataFrame(columns=['title', 'email', 'phone', 'address', 'review (from 5)'])
 base = "https://onemarketingplace.es"
 for url in urls:
     driver = webdriver.Chrome('/usr/bin/chromedriver')
@@ -70,6 +70,16 @@ for url in urls:
         website = sp.find("a", attrs={"class": "contenido__web"}).get("href")
         phone = sp.find("div", attrs={"class":"meta_info"}).find_all("div", attrs={"class":"item_meta_cell"})[1].text
         address = sp.find("div", attrs={"class":"mapa-google"}).p.text
+        review = sp.find("div", attrs={"class":"item_stars"}).find_all("img", attrs={"class":"star-rosa"})
+        # counts the stars in the review
+        count = 0
+        for star in review:
+            if star['src'] == "/imagenes/ico-star-rosa.png":
+                count += 1
+            if star['src'] == "/imagenes/ico-star-halfrosa.png":
+                count += 0.5
+
+        # strip() to clean the useless spaces in the string
         address = address.strip()
         if email == "mailto:":
             email = ""
@@ -77,8 +87,9 @@ for url in urls:
         print(website)
         print(phone)
         print(address)
+        print(count)
         # add the info's to the data frame.
-        df = df.append({'title': s.h2.text, 'email': email[7:]}, ignore_index=True)
+        df = df.append({'title': s.h2.text, 'email': email[7:], 'phone': phone, 'address': address, 'review (from 5)': count}, ignore_index=True)
         # the most important thing is the object destructive function as we create a new object in each iteration
         # there's gonna be a heavy load on the system if we keep them all
         # So after each iteration we delete it
