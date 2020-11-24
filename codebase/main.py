@@ -70,6 +70,7 @@ for url in urls:
         website = sp.find("a", attrs={"class": "contenido__web"}).get("href")
         phone = sp.find("div", attrs={"class":"meta_info"}).find_all("div", attrs={"class":"item_meta_cell"})[1].text
         address = sp.find("div", attrs={"class":"mapa-google"}).p.text
+        address = address.strip()
         if email == "mailto:":
             email = ""
         print(email)
